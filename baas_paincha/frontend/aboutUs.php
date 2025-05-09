@@ -9,7 +9,7 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baas Paincha - Home</title>
+    <title>About Us - Baas Paincha</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -18,12 +18,14 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
             position: relative;
             width: 100%;
         }
+
         .password-container input {
             width: 100%;
             padding: 10px;
-            padding-right: 40px;
+            padding-right: 40px; /* Space for the eye icon */
             box-sizing: border-box;
         }
+
         .toggle-password {
             position: absolute;
             right: 10px;
@@ -38,9 +40,9 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
         <nav class="navbar">
             <div class="logo"><a href="index.php">Baas Paincha</a></div>
             <ul class="nav-links">
-                <li><a href="index.php" class="active">Home</a></li>
+                <li><a href="index.php">Home</a></li>
                 <li><a href="contactUs.php">Contact Us</a></li>
-                <li><a href="aboutUs.php">About Us</a></li>
+                <li><a href="aboutUs.php" class="active">About Us</a></li>
                 <li>
                     <?php if ($isLoggedIn): ?>
                         <a href="<?php echo $dashboardUrl; ?>" title="Go to Dashboard">
@@ -56,13 +58,12 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
     </header>
 
     <!-- Auth Modal -->
-    <div id="auth-modal" class="modal" style="display: none;">
+    <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span class="close">×</span>
             <div class="tabs">
                 <button class="tab-link active" data-tab="login">Login</button>
                 <button class="tab-link" data-tab="register">Register</button>
-                <button class="tab-link" data-tab="forgot-password">Forgot Password</button>
             </div>
             <div id="login" class="tab-content active">
                 <h2>Login</h2>
@@ -72,7 +73,7 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
                         <input type="password" id="login-password" name="password" placeholder="Password" required>
                         <i class="fas fa-eye toggle-password" data-target="login-password"></i>
                     </div>
-                    <a href="#" class="forgot-password switch-tab" data-tab="forgot-password">Forgot Password?</a>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
                     <div class="login-options">
                         <button type="submit" class="btn gradient-btn" data-role="owner">Login as Property Owner</button>
                         <button type="submit" class="btn gradient-btn" data-role="tenant">Login as Tenant</button>
@@ -104,43 +105,45 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
                 </form>
                 <p>Already have an account? <a href="#" class="switch-tab" data-tab="login">Login</a></p>
             </div>
-            <div id="forgot-password" class="tab-content">
-                <h2>Reset Password</h2>
-                <form id="forgot-password-form">
-                    <input type="email" name="email" placeholder="Enter your email" required>
-                    <button type="submit" class="btn gradient-btn">Send Reset Link</button>
-                </form>
-                <p>Back to <a href="#" class="switch-tab" data-tab="login">Login</a></p>
-            </div>
         </div>
     </div>
 
     <main>
-        <section class="hero">
-            <h1>Find Your Perfect Home</h1>
-            <p>Rent your dream space with ease and confidence.</p>
-            <a href="#features" class="btn cta-btn">Explore Now</a>
-        </section>
+        <section class="about-section">
+            <div class="about-content">
+                <h2>Our Mission</h2>
+                <p>At Baas Paincha, we aim to simplify the rental process by connecting tenants with property owners seamlessly. Our platform is designed to make finding and renting a home effortless and transparent.</p>
+            </div>
 
-        <section class="features" id="features">
-            <div class="feature-card">
-                <h3>Wide Variety</h3>
-                <p>From cozy apartments to spacious houses.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Clear Visuals</h3>
-                <p>High-quality images for every property.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Flexible Pricing</h3>
-                <p>Options for every budget.</p>
-            </div>
-        </section>
-
-        <section class="house-listings">
-            <h2>Featured Properties</h2>
-            <div class="property-list" id="property-list">
-                <!-- Properties will be loaded dynamically -->
+            <div class="team-section">
+                <h2>Meet Our Team</h2>
+                <div class="team-container">
+                    <div class="team-card">
+                        <div class="team-image" style="background-image: url('https://via.placeholder.com/150');"></div>
+                        <h3>Rakshyak</h3>
+                        <p>Project Manager</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-image" style="background-image: url('https://via.placeholder.com/150');"></div>
+                        <h3>Nitisha</h3>
+                        <p>Business Analyst</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-image" style="background-image: url('https://via.placeholder.com/150');"></div>
+                        <h3>Bipash</h3>
+                        <p>Developer</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-image" style="background-image: url('https://via.placeholder.com/150');"></div>
+                        <h3>Prajwon</h3>
+                        <p>Developer</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-image" style="background-image: url('https://via.placeholder.com/150');"></div>
+                        <h3>Sachin</h3>
+                        <p>Developer</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -150,41 +153,38 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
     </footer>
     <script src="script.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Password toggle
+        // Password toggle function
         document.querySelectorAll('.toggle-password').forEach(function(icon) {
-            icon.addEventListener('click', function () {
-                const targetId = this.getAttribute('data-target');
-                const passwordInput = document.getElementById(targetId);
-                if (!passwordInput) return;
-                const isVisible = passwordInput.type === 'text';
-                passwordInput.type = isVisible ? 'password' : 'text';
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
+            icon.addEventListener('click', function() {
+                var targetId = icon.getAttribute('data-target');
+                var passwordField = document.getElementById(targetId);
+                var isPasswordVisible = passwordField.type === 'text';
+                passwordField.type = isPasswordVisible ? 'password' : 'text';
+                icon.classList.toggle('fa-eye-slash', !isPasswordVisible);
             });
         });
 
-        // Dummy property data
+        // Dummy data for property listing
         const dummyProperties = [
             {
                 title: 'Cozy Family Home',
                 location: 'Kathmandu, Nepal',
                 rent: 12000,
-                image: 'https://placehold.co/300x200?text=Cozy+Home',
+                image: 'https://via.placeholder.com/300x200?text=Cozy+Home',
                 description: 'A cozy home for families'
             },
             {
                 title: 'Modern Apartment',
                 location: 'Lalitpur, Nepal',
                 rent: 9000,
-                image: 'https://placehold.co/300x200?text=Modern+Apt',
+                image: 'https://via.placeholder.com/300x200?text=Modern+Apt',
                 description: 'Modern living space'
             },
             {
                 title: 'Luxury House',
                 location: 'Bhaktapur, Nepal',
                 rent: 18000,
-                image: 'https://placehold.co/300x200?text=Luxury+House',
+                image: 'https://via.placeholder.com/300x200?text=Luxury+House',
                 description: 'Luxurious living'
             }
         ];
@@ -209,8 +209,8 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
             });
         }
 
+        // Initial render
         renderProperties();
-    });
     </script>
 </body>
 </html>
