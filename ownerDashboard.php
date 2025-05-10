@@ -1,4 +1,5 @@
 <?php
+session_start();
 require 'backend/config.php';
 
 // Check if the user is logged in and has the owner role
@@ -18,11 +19,30 @@ try {
     foreach ($properties as &$property) {
         $property['image'] = json_decode($property['image'], true) ?? [];
     }
-    unset($property); // Unset reference to avoid issues
+    unset($property);
 } catch (PDOException $e) {
     $properties = [];
     error_log("Error fetching properties: " . $e->getMessage());
     echo "Error fetching properties. Please try again later.";
+}
+
+// Fetch rental requests for the owner's properties
+try {
+    $stmt = $pdo->prepare("
+        SELECT rr.id, rr.tenant_id, rr.property_id, rr.status, rr.request_date, 
+               p.title AS property_title, t.full_name AS tenant_name
+        FROM rental_requests rr
+        JOIN properties p ON rr.property_id = p.id
+        JOIN tenants t ON rr.tenant_id = t.id
+        WHERE rr.owner_id = ? AND rr.status = 'pending'
+        ORDER BY rr.request_date DESC
+    ");
+    $stmt->execute([$owner_id]);
+    $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $requests = [];
+    error_log("Error fetching rental requests: " . $e->getMessage());
+    echo "Error fetching rental requests. Please try again later.";
 }
 ?>
 <!DOCTYPE html>
@@ -106,18 +126,18 @@ try {
             margin-bottom: 10px;
         }
         .file-input-container {
-            margin-bottom: 15px; /* Add spacing below the file inputs */
+            margin-bottom: 15px;
         }
         .btn.secondary {
             padding: 5px 10px;
             font-size: 12px;
-            background: rgb(78, 115, 148); /* Secondary button color */
+            background: rgb(78, 115, 148);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            display: block; /* Ensure the button takes its own line */
-            margin-bottom: 15px; /* Add spacing below the button */
+            display: block;
+            margin-bottom: 15px;
         }
         .btn.secondary:hover {
             background: rgb(28, 71, 102);
@@ -133,9 +153,18 @@ try {
             color: red;
         }
         .add-property-form textarea {
-            margin-top: 10px; /* Add spacing above the textarea */
-            width: 100%; /* Ensure the textarea takes full width */
-            box-sizing: border-box; /* Prevent overflow */
+            margin-top: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .request-card {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+        .request-card button {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -209,7 +238,22 @@ try {
             <div class="dashboard-section">
                 <h2>Tenant Requests</h2>
                 <div class="request-list" id="request-list">
-                    <!-- Requests will be loaded dynamically (still dummy for now) -->
+                    <?php if (empty($requests)): ?>
+                        <p>No pending requests.</p>
+                    <?php else: ?>
+                        <?php foreach ($requests as $request): ?>
+                            <div class="request-card">
+                                <h3><?php echo htmlspecialchars($request['tenant_name']); ?></h3>
+                                <p>Property: <?php echo htmlspecialchars($request['property_title']); ?></p>
+                                <p>Request Date: <?php echo htmlspecialchars($request['request_date']); ?></p>
+                                <form action="backend/handle_request.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="request_id" value="<?php echo $request['id']; ?>">
+                                    <button type="submit" name="action" value="approve" class="btn gradient-btn">Approve</button>
+                                    <button type="submit" name="action" value="reject" class="btn delete-btn">Reject</button>
+                                </form>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -237,19 +281,6 @@ try {
 
     <script src="script.js"></script>
     <script>
-        const dummyRequests = [
-            {
-                tenantName: 'John Doe',
-                propertyTitle: 'Cozy Family Home',
-                message: 'Interested in renting this property for my family.'
-            },
-            {
-                tenantName: 'Jane Smith',
-                propertyTitle: 'Modern Apartment',
-                message: 'Can I schedule a visit this weekend?'
-            }
-        ];
-
         let fileIndex = 0;
 
         function toggleAddForm() {
@@ -265,26 +296,10 @@ try {
             newInput.name = 'image[]';
             newInput.accept = 'image/*';
             newInput.id = `file-input-${fileIndex}`;
-            newInput.required = false; // Subsequent inputs are optional
+            newInput.required = false;
             container.appendChild(newInput);
-            container.appendChild(document.createElement('br')); // Add spacing
+            container.appendChild(document.createElement('br'));
         });
-
-        function renderRequests() {
-            const requestList = document.getElementById('request-list');
-            requestList.innerHTML = '';
-            dummyRequests.forEach(request => {
-                const card = document.createElement('div');
-                card.className = 'request-card';
-                card.innerHTML = `
-                    <h3>${request.tenantName}</h3>
-                    <p>Property: ${request.propertyTitle}</p>
-                    <p>Message: ${request.message}</p>
-                    <a href="#" class="btn gradient-btn" onclick="alert('Response feature will be implemented soon!')">Respond</a>
-                `;
-                requestList.appendChild(card);
-            });
-        }
 
         let slideIndex = 0;
         function showPropertyDetails(propertyId, event, images) {
@@ -332,26 +347,21 @@ try {
             slides.style.transform = `translateX(-${slideIndex * 100}%)`;
         }
 
-        // Initial render for requests
-        renderRequests();
-
         // Handle success/error message display
         window.onload = function() {
             const successMessage = document.getElementById('success-message');
             const errorMessage = document.getElementById('error-message');
-            
             if (successMessage) {
                 setTimeout(() => {
                     successMessage.style.display = 'none';
                     window.history.replaceState({}, document.title, window.location.pathname);
-                }, 3000); // Hide after 3 seconds
+                }, 3000);
             }
-            
             if (errorMessage) {
                 setTimeout(() => {
                     errorMessage.style.display = 'none';
                     window.history.replaceState({}, document.title, window.location.pathname);
-                }, 3000); // Hide after 3 seconds
+                }, 3000);
             }
         };
     </script>

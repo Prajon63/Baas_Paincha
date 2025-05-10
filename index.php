@@ -116,6 +116,22 @@ try {
         .slider .next {
             right: 10px;
         }
+        .message-container {
+            margin: 10px auto;
+            padding: 10px;
+            text-align: center;
+            max-width: 600px;
+        }
+        .message-container.success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .message-container.error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
     </style>
 </head>
 <body>
@@ -201,6 +217,11 @@ try {
     </div>
 
     <main>
+        <?php if (isset($_GET['success'])): ?>
+            <div class="message-container success"><?php echo htmlspecialchars($_GET['success']); ?></div>
+        <?php elseif (isset($_GET['error'])): ?>
+            <div class="message-container error"><?php echo htmlspecialchars($_GET['error']); ?></div>
+        <?php endif; ?>
         <section class="hero">
             <h1>Find Your Perfect Home</h1>
             <p>Rent your dream space with ease and confidence.</p>
@@ -233,11 +254,17 @@ try {
                             <p>Location: <?php echo htmlspecialchars($property['location']); ?></p>
                             <p>Rs. <?php echo htmlspecialchars($property['rent']); ?>/month</p>
                             <p><?php echo htmlspecialchars($property['description']); ?></p>
-                            <?php if ($isLoggedIn): ?>
-                                <a href="#" class="btn gradient-btn" onclick='showPropertyDetails(<?php echo $property["id"]; ?>, event, <?php echo json_encode($property["image"]); ?>)'>View Details</a>
+                            <?php if ($isLoggedIn && $role === 'tenant'): ?>
+                                <form action="backend/request_rent.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="property_id" value="<?php echo $property['id']; ?>">
+                                    <button type="submit" class="btn gradient-btn">Request to Rent</button>
+                                </form>
+                            <?php elseif ($isLoggedIn && $role === 'owner'): ?>
+                                <p>You cannot request your own properties.</p>
                             <?php else: ?>
-                                <a href="#" class="btn gradient-btn" onclick="showLoginPrompt(event)">View Details</a>
+                                <a href="#" class="btn gradient-btn" onclick="showLoginPrompt(event)">Request to Rent</a>
                             <?php endif; ?>
+                            <a href="#" class="btn gradient-btn" onclick='showPropertyDetails(<?php echo $property["id"]; ?>, event, <?php echo json_encode($property["image"]); ?>)'>View Details</a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -332,6 +359,24 @@ try {
             const slides = document.getElementById('slides');
             slides.style.transform = `translateX(-${slideIndex * 100}%)`;
         }
+
+        // Handle success/error message display
+        window.onload = function() {
+            const successMessage = document.querySelector('.message-container.success');
+            const errorMessage = document.querySelector('.message-container.error');
+            if (successMessage) {
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }, 3000);
+            }
+            if (errorMessage) {
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }, 3000);
+            }
+        };
     });
     </script>
 </body>
