@@ -47,7 +47,7 @@ try {
             email VARCHAR(255) NOT NULL,
             token VARCHAR(255) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            expires_at TIMESTAMP NOT NULL,
+            expires_at TIMESTAMP NULL,
             INDEX(email)
         )
     ");
@@ -68,6 +68,22 @@ try {
         )
     ");
     echo "Table 'properties' created or already exists.<br>";
+
+    // Create rental_requests table
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS rental_requests (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            tenant_id INT NOT NULL,
+            property_id INT NOT NULL,
+            owner_id INT NOT NULL,
+            status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+            request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE,
+            FOREIGN KEY (property_id) REFERENCES properties(id) ON DELETE CASCADE,
+            FOREIGN KEY (owner_id) REFERENCES owners(id) ON DELETE CASCADE
+        )
+    ");
+    echo "Table 'rental_requests' created or already exists.<br>";
 
     echo "Database setup completed successfully!";
 } catch (PDOException $e) {
