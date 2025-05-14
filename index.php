@@ -49,11 +49,56 @@ try {
             transform: translateY(-50%);
             cursor: pointer;
         }
+        .property-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .house-card {
+            width: 300px;
+            margin: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
         .house-card img {
             width: 100%;
-            height: 200px;
+            height: 150px; /* Reduced from 200px to make card less portrait */
             object-fit: cover;
             border-radius: 8px 8px 0 0;
+        }
+        .house-info {
+            padding: 10px; /* Reduced from 15px for compactness */
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* Reduced from 10px for tighter spacing */
+        }
+        .house-info h3 {
+            margin: 0;
+            font-size: 1.1em; /* Slightly smaller font for compactness */
+        }
+        .house-info p {
+            margin: 3px 0; /* Reduced from 5px for tighter spacing */
+            font-size: 0.9em; /* Slightly smaller font for compactness */
+        }
+        .house-info .btn {
+            padding: 6px 10px; /* Reduced from 8px 12px for compactness */
+            font-size: 13px; /* Reduced from 14px */
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #3182ce, #68d391);
+            color: white;
+            border: none;
+            display: block;
+            margin: 5px auto 0; /* Adjusted margin for better alignment */
+        }
+        .house-info .btn:hover {
+            background: linear-gradient(135deg, #2a70b8, #5abf7f);
         }
         .property-modal {
             display: none;
@@ -76,8 +121,9 @@ try {
             position: relative;
         }
         .property-modal-content img {
-            max-width: 100%;
-            height: auto;
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
             border-radius: 8px;
         }
         .property-modal-content .close {
@@ -262,7 +308,7 @@ try {
     </div>
 
     <footer>
-        <p>© 2025 Baas Paincha. All rights reserved.</p>
+        <p>©️ 2025 Baas Paincha. All rights reserved.</p>
     </footer>
     <script src="script.js"></script>
     <script>
@@ -283,7 +329,7 @@ try {
         let slideIndex = 0;
         window.showPropertyDetails = function(propertyId, event, images) {
             event.preventDefault();
-            const houseCard = document.querySelector(`.house-card[data-property-id="${propertyId}"]`);
+            const houseCard = document.querySelector(⁠ .house-card[data-property-id="${propertyId}"] ⁠);
             const title = houseCard.querySelector('h3').textContent;
             const location = houseCard.querySelector('p:nth-child(2)').textContent.replace('Location: ', '');
             const rent = houseCard.querySelector('p:nth-child(3)').textContent.replace('Rs. ', '').replace('/month', '');
@@ -295,7 +341,7 @@ try {
             images.forEach(image => {
                 const slide = document.createElement('div');
                 slide.className = 'slide';
-                slide.innerHTML = `<img src="${image}" alt="${title}">`;
+                slide.innerHTML = ⁠ <img src="${image}" alt="${title}"> ⁠;
                 slides.appendChild(slide);
             });
             slideIndex = 0;
@@ -330,7 +376,7 @@ try {
 
         function updateSlidePosition() {
             const slides = document.getElementById('slides');
-            slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+            slides.style.transform = ⁠ translateX(-${slideIndex * 100}%) ⁠;
         }
     });
     </script>
