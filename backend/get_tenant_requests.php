@@ -24,4 +24,3 @@ try {
     echo json_encode(['pending' => [], 'responded' => []]);
 }
 ?>
-get teenant_requests.php
