@@ -423,7 +423,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['schedule_meeting'])) 
             const container = document.getElementById('file-input-container');
             const newInput = document.createElement('div');
             newInput.className = 'file-input-container';
-            newInput.innerHTML = <input type="file" name="image[]" accept="image/*" id="file-input-${fileIndex}" ${fileIndex === 0 ? 'required' : ''}><span class="remove-file" onclick="removeFileInput(this)">×</span>;
+            newInput.innerHTML = `<input type="file" name="image[]" accept="image/*" id="file-input-${fileIndex}" ${fileIndex === 0 ? 'required' : ''}><span class="remove-file" onclick="removeFileInput(this)">×</span>`;
             container.appendChild(newInput);
         });
 
@@ -456,7 +456,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['schedule_meeting'])) 
 
         function showPropertyDetails(propertyId, event, images) {
             event.preventDefault();
-            const houseCard = document.querySelector(.house-card[data-property-id="${propertyId}"]);
+            const houseCard = document.querySelector(`.house-card[data-property-id="${propertyId}"]`);
             const title = houseCard.querySelector('h3').textContent;
             const location = houseCard.querySelector('p:nth-child(2)').textContent.replace('Location: ', '');
             const rent = houseCard.querySelector('p:nth-child(3)').textContent.replace('Rs. ', '').replace('/month', '');
@@ -469,7 +469,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['schedule_meeting'])) 
             images.forEach(image => {
                 const slide = document.createElement('div');
                 slide.className = 'slide';
-                slide.innerHTML = <img src="${image}" alt="${title}">;
+                slide.innerHTML = `<img src="${image}" alt="${title}">`;
                 slides.appendChild(slide);
             });
             slideIndex = 0;
@@ -503,7 +503,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['schedule_meeting'])) 
 
         function updateSlidePosition() {
             const slides = document.getElementById('slides');
-            slides.style.transform = translateX(-${slideIndex * 100}%);
+            slides.style.transform = `translateX(-${slideIndex * 100}%)`;
         }
 
         // Show/hide meeting time input based on status selection
@@ -539,7 +539,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['schedule_meeting'])) 
                                 <p>Age: ${request.age}</p>
                                 <p>Occupation: ${request.occupation}</p>
                                 <p>People: ${request.num_people}</p>
-                                ${request.citizenship_copy ? <p>Citizenship: <a href="${request.citizenship_copy}" target="_blank">View</a></p> : ''}
+                                ${request.citizenship_copy ? `<p>Citizenship: <a href="${request.citizenship_copy}" target="_blank">View</a></p>` : ''}
                                 <p>Submitted: ${request.created_at}</p>
                                 <p><strong>Meeting Time:</strong> ${request.meeting_time || 'Not scheduled'}</p>
                                 <form method="POST">
