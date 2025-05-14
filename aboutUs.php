@@ -13,25 +13,90 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
+     <style>
         .password-container {
             position: relative;
             width: 100%;
         }
-
         .password-container input {
             width: 100%;
             padding: 10px;
-            padding-right: 40px; /* Space for the eye icon */
+            padding-right: 40px;
             box-sizing: border-box;
         }
-
         .toggle-password {
             position: absolute;
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
+        }
+        .house-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+        }
+        .property-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .property-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+        .property-modal-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .property-modal-content .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .slider {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+        .slider button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .slider .prev {
+            left: 10px;
+        }
+        .slider .next {
+            right: 10px;
         }
     </style>
 </head>
@@ -56,14 +121,14 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
             <div class="hamburger">☰</div>
         </nav>
     </header>
-
-    <!-- Auth Modal -->
-    <div id="auth-modal" class="modal">
+<!-- Auth Modal -->
+    <div id="auth-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close">×</span>
             <div class="tabs">
                 <button class="tab-link active" data-tab="login">Login</button>
                 <button class="tab-link" data-tab="register">Register</button>
+                <button class="tab-link" data-tab="forgot-password">Forgot Password</button>
             </div>
             <div id="login" class="tab-content active">
                 <h2>Login</h2>
@@ -73,7 +138,7 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
                         <input type="password" id="login-password" name="password" placeholder="Password" required>
                         <i class="fas fa-eye toggle-password" data-target="login-password"></i>
                     </div>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
+                    <a href="#" class="forgot-password switch-tab" data-tab="forgot-password">Forgot Password?</a>
                     <div class="login-options">
                         <button type="submit" class="btn gradient-btn" data-role="owner">Login as Property Owner</button>
                         <button type="submit" class="btn gradient-btn" data-role="tenant">Login as Tenant</button>
@@ -104,6 +169,14 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
                     </div>
                 </form>
                 <p>Already have an account? <a href="#" class="switch-tab" data-tab="login">Login</a></p>
+            </div>
+            <div id="forgot-password" class="tab-content">
+                <h2>Reset Password</h2>
+                <form id="forgot-password-form">
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                    <button type="submit" class="btn gradient-btn">Send Reset Link</button>
+                </form>
+                <p>Back to <a href="#" class="switch-tab" data-tab="login">Login</a></p>
             </div>
         </div>
     </div>
@@ -149,7 +222,7 @@ $dashboardUrl = $role === 'owner' ? 'ownerDashboard.php' : 'tenantDashboard.php'
     </main>
 
     <footer>
-        <p>© 2025 Baas Paincha. All rights reserved.</p>
+        <p>©️ 2025 Baas Paincha. All rights reserved.</p>
     </footer>
     <script src="script.js"></script>
     <script>
