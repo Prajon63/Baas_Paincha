@@ -23,8 +23,14 @@ $location = $_POST['location'] ?? '';
 $rent = $_POST['rent'] ?? '';
 $description = $_POST['description'] ?? '';
 
+// Validate required fields
 if (empty($title) || empty($location) || empty($rent) || empty($description)) {
     die('All fields are required.');
+}
+
+// Additional validation: Rent must be a positive number
+if (!is_numeric($rent) || $rent <= 0) {
+    die('Rent must be a positive number.');
 }
 
 // Handle multiple image uploads
@@ -62,13 +68,19 @@ if (isset($_FILES['image']) && !empty($_FILES['image']['name'][0])) {
     if (empty($images)) {
         die('No images were uploaded successfully.');
     }
+
+    // Optional: Log uploaded image URLs for audit/debug
+    file_put_contents('upload_log.txt', implode("\n", $images) . "\n", FILE_APPEND);
+
 } else {
     die('At least one image is required.');
 }
 
 try {
-    $stmt = $pdo->prepare("INSERT INTO properties (owner_id, title, location, rent, image, description) VALUES (?, ?, ?, ?, ?, ?)");
+    // Insert with created_at timestamp
+    $stmt = $pdo->prepare("INSERT INTO properties (owner_id, title, location, rent, image, description, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
     $stmt->execute([$owner_id, $title, $location, $rent, json_encode($images), $description]);
+
     header('Location: ../ownerDashboard.php?success=Property added successfully');
     exit;
 } catch (PDOException $e) {
